@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>先生の居場所一覧</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+    tr:nth-child(even) {
+      background-color: #fafafa;
+    }
+  </style>
+</head>
+<body>
+  <h1>先生の居場所一覧</h1>
+  <table id="table">
+    <thead>
+      <tr>
+        <th>名前</th>
+        <th>居場所</th>
+        <th>更新日時</th>
+        <th>コメント</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    // ★ここを自分のGAS WebアプリURLに書き換えてください（doGetのURL）
+    const GAS_URL = 'https://script.google.com/macros/s/xxxxxxxxxxxxxxxxxxx/exec';
+
+    async function loadData() {
+      try {
+        const res = await fetch(GAS_URL);
+        const data = await res.json();
+        const tbody = document.querySelector('#table tbody');
+        tbody.innerHTML = ''; // 一旦クリア
+        data.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${item['名前']}</td>
+            <td>${item['居場所']}</td>
+            <td>${item['更新日時']}</td>
+            <td>${item['コメント'] || ''}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    loadData();
+    // 30秒ごとに自動更新
+    setInterval(loadData, 30000);
+  </script>
+</body>
+</html>
